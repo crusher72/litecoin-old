@@ -970,6 +970,7 @@ bool CWalletTx::AcceptWalletTransaction(bool fCheckInputs)
                 if (!mempool.exists(hash) && pcoinsTip->HaveCoins(hash))
                     tx.AcceptToMemoryPool(fCheckInputs, false);
             }
+           
         }
         return AcceptToMemoryPool(fCheckInputs, false);
     }
@@ -1087,16 +1088,16 @@ uint256 static GetOrphanRoot(const CBlockHeader* pblock)
 
 int64 static GetBlockValue(int nHeight, int64 nFees)
 {
-    int64 nSubsidy = 50 * COIN;
+    int64 nSubsidy = 8 * COIN;
 
-    // Subsidy is cut in half every 840000 blocks, which will occur approximately every 4 years
-    nSubsidy >>= (nHeight / 840000); // Litecoin: 840k blocks in ~4 years
+    // Subsidy is cut in half every 7200000 blocks, which will occur approximately every 4 years
+    nSubsidy >>= (nHeight / 7200000); // Litecoin: 840k blocks in ~4 years
 
     return nSubsidy + nFees;
 }
 
-static const int64 nTargetTimespan = 3.5 * 24 * 60 * 60; // Litecoin: 3.5 days
-static const int64 nTargetSpacing = 2.5 * 60; // Litecoin: 2.5 minutes
+static const int64 nTargetTimespan =  1 * 5; // 5 Seconds
+static const int64 nTargetSpacing =  5; // 5 Seconds
 static const int64 nInterval = nTargetTimespan / nTargetSpacing;
 
 //
@@ -4243,7 +4244,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn)
     // Largest block you're willing to create:
     unsigned int nBlockMaxSize = GetArg("-blockmaxsize", DEFAULT_BLOCK_MAX_SIZE);
     // Limit to betweeen 1K and MAX_BLOCK_SIZE-1K for sanity:
-    nBlockMaxSize = std::max((unsigned int)1000, std::min((unsigned int)(MAX_BLOCK_SIZE-1000), nBlockMaxSize));
+    nBlockMaxSize = std::max((unsigned int)1000, std::min((unsigned int)(MAX_BLOCK_SIZE-10000), nBlockMaxSize));
 
     // How much of the block should be dedicated to high-priority transactions,
     // included regardless of the fees they pay
